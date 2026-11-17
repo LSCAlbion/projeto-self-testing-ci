@@ -79,3 +79,11 @@ def test_should_fail_transfer_when_amount_is_zero_or_negative():
 
     assert source.balance == Decimal("100.00")
     assert dest.balance == Decimal("50.00")
+
+
+def test_should_fail_transfer_when_subcent_amount_quantizes_to_zero():
+    source = Account("111.111.111-11", "Origem", Decimal("100.00"))
+    dest = Account("222.222.222-22", "Destino", Decimal("50.00"))
+
+    with pytest.raises(InvalidAmountError, match="Valor mínimo de transferência é de R\\$ 0,01"):
+        execute_transfer(source, dest, Decimal("0.004"))
