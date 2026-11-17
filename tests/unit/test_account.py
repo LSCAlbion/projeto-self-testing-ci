@@ -24,7 +24,7 @@ def test_should_create_account_with_valid_initial_balance():
 
     # Assert
     assert account.id is not None
-    assert account.document_number == doc
+    assert account.document_number == "12345678900"
     assert account.holder_name == holder
     assert account.balance == initial_balance
     assert account.created_at is not None
@@ -102,3 +102,12 @@ def test_should_not_withdraw_zero_or_negative_amount():
 
     with pytest.raises(InvalidAmountError, match="Valor de saque deve ser positivo"):
         account.withdraw(Decimal("-5.00"))
+
+
+def test_should_sanitize_document_number_removing_punctuation():
+    account = Account(
+        document_number="123.456.789-00",
+        holder_name="Lucas Hotfix",
+        initial_balance=Decimal("100.00"),
+    )
+    assert account.document_number == "12345678900"
