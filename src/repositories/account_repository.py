@@ -29,8 +29,7 @@ class AccountRepository:
 
     def get_by_id(self, account_id: UUID, for_update: bool = False) -> Optional[Account]:
         query = self.session.query(AccountModel).filter(AccountModel.id == str(account_id))
-        if for_update:
-            # SQLite ignora com no-op gracioso, bancos relacionais como PostgreSQL aplicam lock de linha
+        if for_update and self.session.bind and self.session.bind.dialect.name != "sqlite":
             query = query.with_for_update()
         model = query.first()
         if not model:
