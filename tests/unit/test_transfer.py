@@ -35,11 +35,15 @@ def test_should_execute_successful_transfer_between_two_accounts():
     assert debit_tx.destination_account_id == dest.id
     assert debit_tx.amount == transfer_amount
     assert debit_tx.type == TransactionType.DEBIT
+    assert debit_tx.is_debit is True
+    assert debit_tx.is_credit is False
 
     assert credit_tx.source_account_id == source.id
     assert credit_tx.destination_account_id == dest.id
     assert credit_tx.amount == transfer_amount
     assert credit_tx.type == TransactionType.CREDIT
+    assert credit_tx.is_credit is True
+    assert credit_tx.is_debit is False
 
 
 def test_should_fail_transfer_when_source_has_insufficient_funds():

@@ -16,8 +16,9 @@ class TransactionType(str, Enum):
     CREDIT = "CREDIT"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Transaction:
+    """Representação imutável de uma movimentação financeira."""
     source_account_id: UUID
     destination_account_id: UUID
     amount: Decimal
@@ -26,7 +27,15 @@ class Transaction:
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
     def __post_init__(self):
-        self.amount = quantize_amount(self.amount)
+        object.__setattr__(self, "amount", quantize_amount(self.amount))
+
+    @property
+    def is_debit(self) -> bool:
+        return self.type == TransactionType.DEBIT
+
+    @property
+    def is_credit(self) -> bool:
+        return self.type == TransactionType.CREDIT
 
 
 def execute_transfer(
