@@ -54,6 +54,8 @@ def execute_transfer(
         raise InvalidAmountError("Valor de transferência deve ser positivo")
 
     normalized_amount = quantize_amount(amount)
+    if normalized_amount < Decimal("0.01"):
+        raise InvalidAmountError("Valor mínimo de transferência é de R$ 0,01")
 
     # Débito da origem (lançará InsufficientFundsError se saldo insuficiente)
     source_account.withdraw(normalized_amount)
