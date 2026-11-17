@@ -1,0 +1,16 @@
+[run]
+branch = True
+source = src
+omit = 
+    */__init__.py
+    src/main.py
+
+[report]
+show_missing = True
+precision = 2
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
