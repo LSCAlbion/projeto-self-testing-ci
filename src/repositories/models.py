@@ -48,11 +48,14 @@ class IdempotencyRecordModel(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
 
 
+from sqlalchemy.pool import StaticPool
+
 def create_sqlite_in_memory_engine():
-    """Cria engine SQLite em memória para isolamento de testes de integração."""
+    """Cria engine SQLite em memória para isolamento de testes de integração com StaticPool."""
     engine = create_engine(
         "sqlite:///:memory:",
         connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
     Base.metadata.create_all(bind=engine)
     return engine
