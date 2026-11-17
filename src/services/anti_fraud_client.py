@@ -1,3 +1,4 @@
+import os
 from decimal import Decimal
 from typing import Dict, Any
 from uuid import UUID
@@ -20,8 +21,11 @@ class AntiFraudClient:
     ) -> Dict[str, Any]:
         """
         Notifica o gateway externo de anti-fraude via webhook/HTTP POST.
-        Nos testes de integração e unitários, esta chamada é espionada via MOCK.
+        Em ambiente de teste/carga (MOCK_EXTERNAL_SERVICES=true), responde localmente com sucesso.
         """
+        if os.getenv("MOCK_EXTERNAL_SERVICES", "false").lower() == "true":
+            return {"status": "APPROVED", "risk_level": "LOW", "transaction_id": str(transaction_id)}
+
         payload = {
             "transaction_id": str(transaction_id),
             "source_account_id": str(source_account_id),

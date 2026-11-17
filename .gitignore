@@ -221,3 +221,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Load test and local sqlite
+load_report*
+load_test.db
+wallet.db
+coverage_html/
+coverage.xml
