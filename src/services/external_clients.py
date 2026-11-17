@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Any
 import httpx
 from src.domain.exceptions import KycValidationError
@@ -12,8 +13,11 @@ class KycValidationClient:
     def validate_document(self, document_number: str) -> Dict[str, Any]:
         """
         Consulta serviço externo cadastral.
-        Nos testes, este método é substituído por um STUB que fornece resposta controlada.
+        Em ambiente de teste/carga (MOCK_EXTERNAL_SERVICES=true), responde localmente.
         """
+        if os.getenv("MOCK_EXTERNAL_SERVICES", "false").lower() == "true":
+            return {"is_valid": True, "score": 950}
+
         url = f"{self.base_url}/v1/validate"
         try:
             with httpx.Client(timeout=3.0) as client:
@@ -23,7 +27,6 @@ class KycValidationClient:
                     raise KycValidationError(f"Documento {document_number} reprovado na verificação cadastral")
                 return data
         except httpx.RequestError:
-            # Em caso de falha de conexão simulada
             raise KycValidationError("Serviço de validação cadastral indisponível")
 
 
