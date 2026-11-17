@@ -35,7 +35,9 @@ class Account:
         if not self.document_number or not self.document_number.strip():
             raise InvalidDocumentError("Documento do titular é obrigatório")
 
-        self.document_number = self.document_number.strip()
+        # Hotfix: normaliza removendo caracteres não numéricos (pontos, traços, etc.)
+        cleaned_doc = "".join(filter(str.isdigit, self.document_number))
+        self.document_number = cleaned_doc if cleaned_doc else self.document_number.strip()
         self.holder_name = self.holder_name.strip() if self.holder_name else ""
 
         if self.initial_balance < Decimal("0.00"):
